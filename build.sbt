@@ -13,7 +13,7 @@ lazy val root = project
       "com.otherbrane" %%% "threejsfacade" % "0.1-SNAPSHOT" ,
       "org.scalatest" %%% "scalatest"      % "3.2.7"    % "test"
     ),
-    scalaJSUseMainModuleInitializer := true
+    scalaJSUseMainModuleInitializer := false
   )
 
 
