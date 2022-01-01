@@ -16,19 +16,19 @@ class Chart(rows: Int, cols: Int) extends Group() with Update {
   }
 
   // Proper Chart properties
-  var data: Array[Array[Int]] = Array.ofDim(rows, cols)
+  var data: Array[Array[Float]] = Array.ofDim(rows, cols)
   var chartBlocks: Seq[Mesh] = Seq()
 
   // TODO perhaps it'd be better to have a constructor to take data
-  def setData(newData: Array[Array[Int]]): Unit = {
+  def setData(newData: Array[Array[Float]]): Unit = {
     for(x <- newData.indices)
       for(y <- newData(x).indices)
         addChartBlock(x, y, newData(x)(y))
   }
 
-  private def addChartBlock(x: Int, y: Int, chartValue: Int): Unit = {
+  private def addChartBlock(x: Int, y: Int, chartValue: Float): Unit = {
 
-    println(s"addChartBlock: x: $x y: $y value: ${chartValue}")
+//    println(s"addChartBlock: x: $x y: $y value: ${chartValue}")
     val geometry = new BoxGeometry(1, chartValue,1,1,1,1)
 //    val material = new MeshStandardMaterial( threejs.MeshStandardMaterialParameters(color = "#433F81") )
     val material = new MeshStandardMaterial( threejs.MeshStandardMaterialParameters(color = s"rgb(${x % 256}, ${y % 256}, 128)") )
