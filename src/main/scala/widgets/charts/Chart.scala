@@ -9,6 +9,7 @@ class Chart(rows: Int, cols: Int) extends Group() with Update {
 
   // TODO components and update should likely be in some base trait
   var components = Seq.empty[Component]
+  var debugaxis: Axis = null
 
   def update: Unit = {
     for (c <- components)
@@ -24,6 +25,10 @@ class Chart(rows: Int, cols: Int) extends Group() with Update {
     for(x <- newData.indices)
       for(y <- newData(x).indices)
         addChartBlock(x, y, newData(x)(y))
+    val axis = new Axis(new Vector3(0,1,0))
+    axis.position.set(this.position.x, this.position.y, this.position.z)
+    this.add(axis)
+    debugaxis = axis
   }
 
   private def addChartBlock(x: Int, y: Int, chartValue: Float): Unit = {
@@ -41,6 +46,8 @@ class Chart(rows: Int, cols: Int) extends Group() with Update {
     mesh.position.y = this.position.y + (chartValue/2)
     mesh.position.z = this.position.z - y // Note y becoming -z
     this.add(mesh)
+
+
     this.chartBlocks = this.chartBlocks :+ mesh
   }
 }
