@@ -25,10 +25,16 @@ class Chart(rows: Int, cols: Int) extends Group() with Update {
     for(x <- newData.indices)
       for(y <- newData(x).indices)
         addChartBlock(x, y, newData(x)(y))
-    val axis = new Axis(new Vector3(0,1,0))
-    axis.position.set(this.position.x, this.position.y, this.position.z)
-    this.add(axis)
-    debugaxis = axis
+    val axisX = new Axis(new Vector3(1,0,0))
+    val axisY = new Axis(new Vector3(0,1,0))
+    val axisZ = new Axis(new Vector3(0,0,1))
+    axisX.position.set(this.position.x, this.position.y, this.position.z)
+    axisY.position.set(this.position.x, this.position.y, this.position.z)
+    axisZ.position.set(this.position.x, this.position.y, this.position.z)
+    this.add(axisX)
+    this.add(axisY)
+    this.add(axisZ)
+    debugaxis = axisX
   }
 
   private def addChartBlock(x: Int, y: Int, chartValue: Float): Unit = {
@@ -44,9 +50,8 @@ class Chart(rows: Int, cols: Int) extends Group() with Update {
     val mesh = new Mesh(geometry, material)
     mesh.position.x = this.position.x + x
     mesh.position.y = this.position.y + (chartValue/2)
-    mesh.position.z = this.position.z - y // Note y becoming -z
+    mesh.position.z = this.position.z + y // Note y becoming z
     this.add(mesh)
-
 
     this.chartBlocks = this.chartBlocks :+ mesh
   }

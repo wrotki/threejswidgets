@@ -1,7 +1,7 @@
 package widgets.charts
 
 import objects3d.{Component, Update}
-import threejs.{BufferAttribute, BufferGeometry, Group, Line, LineBasicMaterial, LineMaterialParameters, Vector3}
+import threejs.{BufferAttribute, BufferGeometry, Group, Line, LineBasicMaterial, LineMaterialParameters, Quaternion, Vector3}
 
 import scala.scalajs.js.typedarray.Float32Array
 
@@ -9,7 +9,7 @@ import scala.scalajs.js.typedarray.Float32Array
 // THREE.Line Strip
 // THREE.Line Loop
 
-class Axis(dimensions: Vector3) extends Group() with Update {
+class Axis(vec: Vector3) extends Group() with Update {
   // TODO components and update should likely be in some base trait
   var components = Seq.empty[Component]
 
@@ -31,7 +31,28 @@ class Axis(dimensions: Vector3) extends Group() with Update {
     geometry.setAttribute( "position", new BufferAttribute( positions, 3 ) )
     val obj = new Line( geometry, new LineBasicMaterial( LineMaterialParameters("#ffff00") ) )
     this.add(obj)
+
+    val arrow = new Arrow(new Vector3(this.position.x, this.position.y + radius, this.position.z))
+    this.add(arrow)
+  }
+
+  def rotate(): Unit = {
+    val id = new Quaternion(0f,0f,0f,0f).identity()
+    var updateQuaternion = id.setFromAxisAngle(new Vector3(0f,1f,0f), (Math.PI/2.0).toFloat)
+    if( vec.x > 0.0f ) {
+      id.setFromAxisAngle(new Vector3(0f,0f,-1f), (Math.PI/2.0).toFloat)
+    }
+    if( vec.z > 0.0f ) {
+      id.setFromAxisAngle(new Vector3(1f,0f,0f), (Math.PI/2.0).toFloat)
+    }
+    if( vec.y == 0.0f ) { // Y axis is already in place
+      val newOwnerQuaternion = this.quaternion.clone()
+      newOwnerQuaternion.multiply(updateQuaternion)
+      newOwnerQuaternion.normalize()
+      this.quaternion.copy(newOwnerQuaternion)
+    }
   }
 
   init()
+  rotate()
 }
