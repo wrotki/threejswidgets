@@ -1,30 +1,48 @@
 package widgets.charts
 
-import threejs.{BoxGeometry, BufferGeometry, Color, Group, Material, Mesh, MeshBasicMaterial, MeshStandardMaterial, Object3D, Vector3}
 import objects3d.{Component, Update}
+import threejs.utils.BufferGeometryUtils
+import threejs.{BufferGeometry, _}
 
+import scala.scalajs.js
+import js.JSConverters._
+import scala.collection.mutable
 import scala.language.postfixOps
 
 class Chart(rows: Int, cols: Int) extends Group() with Update {
 
   // TODO components and update should likely be in some base trait
   var components = Seq.empty[Component]
-  var debugaxis: Axis = null
+  var debugaxis: Axis = _
+  var mergedGeometry: BufferGeometry = _
+
+  // Proper Chart properties
+  var data: Array[Array[Float]] = Array.ofDim(rows, cols)
+  var chartBlocks: Seq[Mesh] = Seq()
 
   def update: Unit = {
     for (c <- components)
       c.update()
   }
 
-  // Proper Chart properties
-  var data: Array[Array[Float]] = Array.ofDim(rows, cols)
-  var chartBlocks: Seq[Mesh] = Seq()
-
   // TODO perhaps it'd be better to have a constructor to take data
   def setData(newData: Array[Array[Float]]): Unit = {
     for(x <- newData.indices)
       for(y <- newData(x).indices)
         addChartBlock(x, y, newData(x)(y))
+
+    var geometries: js.Array[BufferGeometry] = (chartBlocks map { _.geometry } ).toJSArray
+
+    mergedGeometry = BufferGeometryUtils.mergeBufferGeometries(geometries, false)
+    val chartMaterial = new MeshStandardMaterial( threejs.MeshStandardMaterialParameters(color = s"rgb(64,255, 128)") )
+    chartMaterial.metalness = 0.8f
+    chartMaterial.roughness = 0.3f
+    //    material.emissive = new Color("#1f4fef")
+    chartMaterial.emissive = new Color(s"rgb(64,255, 128)")
+    val chartMesh = new Mesh(mergedGeometry, chartMaterial)
+
+    this.add(chartMesh) // TODO uncomment
+
     val axisX = new Axis(new Vector3(1,0,0))
     val axisY = new Axis(new Vector3(0,1,0))
     val axisZ = new Axis(new Vector3(0,0,1))
@@ -51,7 +69,8 @@ class Chart(rows: Int, cols: Int) extends Group() with Update {
     mesh.position.x = this.position.x + x
     mesh.position.y = this.position.y + (chartValue/2)
     mesh.position.z = this.position.z + y // Note y becoming z
-    this.add(mesh)
+
+//    this.add(mesh) // TODO render mergedGeometry instead
 
     this.chartBlocks = this.chartBlocks :+ mesh
   }
