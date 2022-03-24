@@ -25,15 +25,15 @@ class Axis(vec: Vector3) extends Group() with Update {
     val positions = new Float32Array(numPoints * 3)
     for (p <- 0 until numPoints) {
       positions(p * 3) = 0
-      positions(p * 3 + 1) = p * radius * 1.2f
+      positions(p * 3 + 1) = p * radius
       positions(p * 3 + 2) = 0
     }
     geometry.setAttribute( "position", new BufferAttribute( positions, 3 ) )
     val obj = new Line( geometry, new LineBasicMaterial( LineMaterialParameters("#ffff00") ) )
     this.add(obj)
 
-    val arrow = new Arrow(new Vector3(this.position.x, this.position.y + radius, this.position.z))
-    arrow.position.set(0f,radius * 0.66f ,0f)
+    val arrow = new Arrow(new Vector3(0, radius, 0))
+    arrow.position.set(0f,radius ,0f)
     this.add(arrow)
   }
 

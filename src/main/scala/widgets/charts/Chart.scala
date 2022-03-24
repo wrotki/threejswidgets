@@ -51,7 +51,8 @@ class Chart(rows: Int, cols: Int) extends Group() with Update {
     chartMesh.position.x = this.position.x
     chartMesh.position.y = this.position.y
     chartMesh.position.z = this.position.z
-    this.add(chartMesh) // TODO uncomment
+
+    // this.add(chartMesh) // TODO uncomment
 
     val axisX = new Axis(new Vector3(maxx,0,0))
     val axisY = new Axis(new Vector3(0,maxz,0))
