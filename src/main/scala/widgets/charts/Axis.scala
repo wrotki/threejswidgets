@@ -35,6 +35,9 @@ class Axis(vec: Vector3) extends Group() with Update {
     val arrow = new Arrow(new Vector3(0, radius, 0))
     arrow.position.set(0f,radius ,0f)
     this.add(arrow)
+
+    val label = new Label()
+    this.add(label)
   }
 
   def rotate(): Unit = {
