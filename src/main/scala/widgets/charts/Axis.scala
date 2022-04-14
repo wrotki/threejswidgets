@@ -37,6 +37,7 @@ class Axis(vec: Vector3) extends Group() with Update {
     this.add(arrow)
 
     val label = new Label()
+    label.position.set(0f, 200f ,0f)
     this.add(label)
   }
 
